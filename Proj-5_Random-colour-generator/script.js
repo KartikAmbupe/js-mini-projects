@@ -1,27 +1,38 @@
-const randomColor = function () {
-    const hex = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += hex[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
-  
-  let intervalId;
-  const startChangingColor = function () {
-    if (!intervalId) {
-      intervalId = setInterval(changeBgColor, 1000);
-    }
-  
-    function changeBgColor() {
-      document.body.style.backgroundColor = randomColor();
-    }
-  };
-  const stopChangingColor = function () {
-    clearInterval(intervalId);
-    intervalId = null;
-  };
-  
-  document.querySelector('#start').addEventListener('click', startChangingColor);
-  
-  document.querySelector('#stop').addEventListener('click', stopChangingColor);
+const randomColour = function(){
+  const hex = "0123456789ABCDEF";
+  let colour = "#";
+  for(let i=0; i<6; i++){
+    colour += hex[Math.floor(Math.random() * 16)];
+  }
+  return colour;
+};
+
+let intervalId;
+
+const startColourChange = function(){
+  function changeBgColour(){
+    document.body.style.backgroundColor = randomColour();
+  }
+  if(!intervalId){
+    intervalId = setInterval(changeBgColour, 1000);
+  }
+}
+
+const stopColourChange = function(){
+  clearInterval(intervalId);
+  intervalId = null; // Ensures that any future calls to stopColourChange will not attempt to clear the interval, hence avoids unnecessary operations
+}
+
+const resetColourChange = function(){
+  clearInterval(intervalId);
+  intervalId = null;
+  document.body.style.backgroundColor = '#212121';
+}
+
+document.querySelector('#start').addEventListener('click', startColourChange);
+
+document.querySelector('#stop').addEventListener('click', stopColourChange);
+
+document.querySelector('#reset').addEventListener('click', resetColourChange);
+
+
