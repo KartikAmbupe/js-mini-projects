@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Request</title>
+    <style>
+      .profile-card { 
+        background-color: #333; 
+        padding: 20px; 
+        border-radius: 10px; 
+        text-align: center; 
+        width: 300px; 
+        margin: 20px auto; 
+      } 
+      .profile-card img { 
+        border-radius: 50%; 
+        width: 100px; 
+        height: 100px; 
+      }
+      button{
+        padding: 10px 20px;
+        border-radius: 10px;
+        border-width: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 15px;
+      }
+    </style>
+</head>
+<body style="background-color: #212121; color: #fff; font-family: Arial, Helvetica, sans-serif;">
+  <div style="text-align: center; margin-top: 50px;"> 
+    <button id="fetchButton">Load GitHub Profile</button> 
+  </div> 
+  <div id="profile" class="profile-card" style="display: none;"> 
+    <img id="profilePic" src="" alt="Profile Picture"> 
+    <h2 id="userName"></h2> 
+    <h3 id="bio"></h3>
+    <p id="followerCount"></p>
+  </div>
+</body>
+<script>
+  document.getElementById('fetchButton').addEventListener('click', function(){
+    const requestUrl = 'https://api.github.com/users/KartikAmbupe';
+    const xhr = new XMLHttpRequest(); //method to make request
+    xhr.open('GET', requestUrl);
+    xhr.onreadystatechange = function(){// this would be called on every state change
+        // 4 means request is done
+        if(xhr.readyState === 4 && xhr.status === 200){
+            // const data = JSON.parse(this.responseText); // most of the times response from the url is in string form and we have to convert it
+            const data = JSON.parse(this.responseText); // convert response to JSON 
+            console.log(this.responseText)
+            document.getElementById('profilePic').src = data.avatar_url; // set profile picture
+            document.getElementById('userName').textContent = data.login; // set user name 
+            document.getElementById('bio').textContent = data.bio; // set bio
+            document.getElementById('followerCount').textContent = `Followers: ${data.followers}`; // set follower count 
+            document.getElementById('profile').style.display = 'block'; // display the profile card
+        }
+    }
+    xhr.send();
+  });
+
+</script>
+</html>
