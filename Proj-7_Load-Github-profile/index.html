@@ -4,40 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Request</title>
-    <style>
-      .profile-card { 
-        background-color: #333; 
-        padding: 20px; 
-        border-radius: 10px; 
-        text-align: center; 
-        width: 300px; 
-        margin: 20px auto; 
-      } 
-      .profile-card img { 
-        border-radius: 50%; 
-        width: 100px; 
-        height: 100px; 
-      }
-      button{
-        padding: 10px 20px;
-        border-radius: 10px;
-        border-width: 5px;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 15px;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body style="background-color: #212121; color: #fff; font-family: Arial, Helvetica, sans-serif;">
-  <div style="text-align: center; margin-top: 50px;"> 
-    <button id="fetchButton">Load GitHub Profile</button> 
-  </div> 
-  <div id="profile" class="profile-card" style="display: none;"> 
-    <img id="profilePic" src="" alt="Profile Picture"> 
-    <h2 id="userName"></h2> 
-    <h3 id="bio"></h3>
-    <p id="followerCount"></p>
-  </div>
+<body>
+    <div class="container">
+        <button id="fetchButton">Load GitHub Profile</button>
+        <div id="profile" class="profile-card">
+            <img id="profilePic" src="" alt="Profile Picture">
+            <h2 id="userName"></h2>
+            <h3 id="bio"></h3>
+            <p id="followerCount"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 </html>
