@@ -1,135 +1,95 @@
-const startGameBtn = document.getElementById('start-game-btn');
-
-// function startGame(){
-//     console.log('game is starting');
-// } //here we are using function as a declaration
-
-// const start = function(){
-//     console.log('game is starting');
-// }; //here we are using function as an expression, so now the function name is not necessary. This is now called as an anonymous function
-/*
-const person = {
-    greet: function greet(){
-        console.log('Hello!');
-    }//this function is now called a method
-};
-
-person.greet();
-*/
-
-// console.dir(startGame);
-
-const ROCK = 'ROCK';
-const PAPER = 'PAPER';
-const SCISSORS = 'SCISSORS';
-const DEFAUT_USER_CHOICE = ROCK;
-const RESULT_DRAW = 'DRAW';
-const RESULT_PLAYER_WINS = 'You Win!';
-const RESULT_COMPUTER_WINS = 'Computer Wins!';
-
-let gameIsRunning = false;
-
-const getPlayerChoice = function () {
-    const selection = prompt(`${ROCK}, ${PAPER} or ${SCISSORS}?`,'').toUpperCase();
-    if (selection !== ROCK && selection !== PAPER && selection !== SCISSORS){
-        alert(`Invalid choice! We chose ${DEFAUT_USER_CHOICE} for you!`);
-        return;
-    }
-    return selection;
-}
-
-const getComputerChoice = function(){//this is called an anonymous function
-    const randomValue = Math.random();
-    if(randomValue < 0.34){
-        return ROCK;
-    }
-    else if(randomValue < 0.67){
-        return PAPER;
-    }
-    else{
-        return SCISSORS;
-    }
-}
-
-// const getWinner = function(cChoice, pChoice){
-//     if(cChoice === pChoice){
-//         return RESULT_DRAW;
-//     }
-//     else if(cChoice === ROCK && pChoice === PAPER ||
-//         cChoice === PAPER && pChoice === SCISSORS ||
-//         cChoice === SCISSORS && pChoice === ROCK){
-//             return RESULT_PLAYER_WINS;
-//     }
-//     else{
-//         return RESULT_COMPUTER_WINS;
-//     }  
-// }
-
-// we can use the below code in place of above with the help of arrow function
-// we write the function without {} as there is only one expression inside the if else loop
-const getWinner = (cChoice, pChoice = DEFAUT_USER_CHOICE) => //default arguements
-    cChoice === pChoice //if
-    ? RESULT_DRAW : 
-    (cChoice === ROCK && pChoice === PAPER ||
-    cChoice === PAPER && pChoice === SCISSORS ||
-    cChoice === SCISSORS && pChoice === ROCK)//elseif
-    ? RESULT_PLAYER_WINS 
-    : RESULT_COMPUTER_WINS;//else
-
-startGameBtn.addEventListener('click', () => {
-//here we are passing a pointer at a function to another function
-//this is a call-back function, it passes an arguement for another function that is the addEventListener function
-if(gameIsRunning){
-        return;
-    }
-    gameIsRunning = true;
-    console.log('Game is starting');
-    const playerChoice = getPlayerChoice();
-    const computerChoice = getComputerChoice();
-    let winner;
-    if(playerChoice){
-        winner = getWinner(computerChoice, playerChoice);
-    }
-    else{
-        winner = getWinner(computerChoice);
-    }
-//    const winner = getWinner(playerChoice, computerChoice);
+let score = localStorage.getItem('score') ? JSON.parse(localStorage.getItem('score')) : { 
+    wins: 0,
+    losses: 0,
+    ties: 0
+  };
+  
+  updateScoreElement();
+  
+  function resetScore(){
+    score.wins = 0;
+    score.losses = 0;
+    score.ties = 0;
+  }
+  
+  function playGame(playerMove){
+    const computerMove = pickComputerMove();
+  
+    let result = ' ';
     
-    let message = `You picked ${playerChoice || DEFAUT_USER_CHOICE}, computer picked ${computerChoice} `;
-    
-    if(winner === RESULT_DRAW){
-        message = message + `hence its a DRAW!`;
+    if (playerMove === 'Scissors'){
+      if (computerMove === 'Rock'){
+      result = 'You lose.'
+      }
+      else if(computerMove === 'Paper'){
+        result = 'You won!'
+      }
+      else if (computerMove === 'Scissors'){
+        result = 'Tie'
+      }
     }
-    else if(winner === RESULT_PLAYER_WINS){
-        message = message + 'You Win!';
+    else if (playerMove === 'Paper'){
+      if (computerMove === 'Rock'){
+        result = 'You won!'
+      }
+      else if(computerMove === 'Paper'){
+        result = 'Tie'
+      }
+      else if (computerMove === 'Scissors'){
+        result = 'You lose.'
+      }
     }
-    else{
-        message = message + 'Computer Wins!';
+    else if (playerMove === 'Rock'){
+      if (computerMove === 'Rock'){
+        result = 'Tie'
+      }
+      else if(computerMove === 'Paper'){
+        result = 'You lose.'
+      }
+      else if (computerMove === 'Scissors'){
+        result = 'You won!'
+      }
     }
-    alert(message);
-    gameIsRunning = false;
-}); 
-
-
-//not related to game
-
-
-//... -> this is called spread/rest operator, it spreads the array into individual arguements
-//the rest parameter should be passed at the end of the parameter list if there are multiple parameters
-const combine = (resultHandler, operation, ...numbers) => {
-    //we can create functions inside functions
-    const validateNumber = (number) => {
-        return isNaN(number)? 0 : number;
+  
+    if (result === 'You won!'){
+      score.wins += 1;
+    } else if (result === 'You lose.'){
+      score.losses += 1;
+    } else if (result === 'Tie'){
+      score.ties += 1;
     }
-    let sum = 0;
-    for(const num of numbers){
-        if(operation === 'ADD'){
-            sum += validateNumber(num);
-        }
-        else if(operation === 'SUBTRACT'){
-            sum -= validateNumber(num);
-        }
+  
+    localStorage.setItem('score', JSON.stringify(score));
+  
+    updateScoreElement();
+  
+    document.querySelector('.js-result').innerHTML = result;
+  
+    document.querySelector('.js-moves').innerHTML =`You
+  <img src="/Proj-8_Rock-Paper-scissors/images/${playerMove}-emoji.png" class="moves">
+  <img src="/Proj-8_Rock-Paper-scissors/images/${computerMove}-emoji.png" class="moves">
+  Computer`;  
+  }
+  
+  function updateScoreElement() {
+    document.querySelector('.js-score')
+    .innerHTML = `Wins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties}`;
+  }
+  
+  
+  function pickComputerMove(){
+    const randomNumber = Math.random();
+  
+    let computerMove = ' ';
+  
+    if (randomNumber>= 0 && randomNumber < 1/3){
+      computerMove = 'Rock';
     }
-    resultHandler(sum);
-};
-
+    else if (randomNumber >= 1/3 && randomNumber < 2/3){
+      computerMove = 'Paper'
+    }
+    else if (randomNumber >=2/3 && randomNumber < 1){
+      computerMove = 'Scissors'
+    }
+    return computerMove;
+  }
